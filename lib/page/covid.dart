@@ -1,25 +1,14 @@
 import 'package:flutter/material.dart';
 import '../model/covid_model.dart';
 
-class Covid extends StatefulWidget {
+class Covid extends StatelessWidget {
   const Covid({Key? key}) : super(key: key);
   final String title = 'Check Covid-19';
-
-  @override
-  State<Covid> createState() => _CovidState();
-}
-
-class _CovidState extends State<Covid> {
-  late Future<CovidData> futureCovidData;
-
-  @override
-  void initState() {
-    super.initState();
-    futureCovidData = getCovidData();
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future<CovidData> futureCovidData;
+    futureCovidData = getCovidData();
+
     return FutureBuilder<CovidData>(
         future: futureCovidData,
         builder: (context, snapshot) {
@@ -39,12 +28,18 @@ class _CovidState extends State<Covid> {
                   padding: const EdgeInsets.all(10),
                   child: Wrap(
                     children: [
-                      _card('assets/covid_icon/patient.png', 'New Case:',
-                          '${snapshot.data!.newCase}'),
-                      _card('assets/covid_icon/gravestone.png', 'New Death:',
-                          '${snapshot.data!.newDeath}'),
-                      _card('assets/covid_icon/vaccine.png', 'New Recovered:',
-                          '${snapshot.data!.newRecovered}'),
+                      CardShowCovidData(
+                          img: 'assets/covid_icon/patient.png',
+                          title: 'New Case:',
+                          subtitle: '${snapshot.data!.newCase}'),
+                      CardShowCovidData(
+                          img: 'assets/covid_icon/gravestone.png',
+                          title: 'New Death:',
+                          subtitle: '${snapshot.data!.newDeath}'),
+                      CardShowCovidData(
+                          img: 'assets/covid_icon/vaccine.png',
+                          title: 'New Recovered:',
+                          subtitle: '${snapshot.data!.newRecovered}'),
                       // Text('txnDate = ${snapshot.data!.txnDate}'),
                       // Text('newCase = ${snapshot.data!.newCase}'),
                       // Text('totalCase = ${snapshot.data!.totalCase}'),
@@ -77,16 +72,29 @@ class _CovidState extends State<Covid> {
           }
         });
   }
+}
 
-  Widget _card(String img, String _title, String _subtitle) {
+class CardShowCovidData extends StatelessWidget {
+  const CardShowCovidData(
+      {Key? key,
+      required this.img,
+      required this.title,
+      required this.subtitle})
+      : super(key: key);
+  final String img;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
         width: 300,
         height: 260,
         child: Card(
           child: Column(children: [
             Image.asset(img, scale: 3),
-            ListTile(title: Text(_title), subtitle: Text(_subtitle))
+            ListTile(title: Text(title), subtitle: Text(subtitle))
           ]),
         ));
   }
-}// end class
+}
